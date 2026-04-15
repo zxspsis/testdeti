@@ -30,14 +30,14 @@ body {
   transition: 0.3s;
 }
 
-/* контейнер */
+
 .container {
-  max-width: 520px;   /* уже = ближе к центру */
+  max-width: 520px;   
   margin: auto;
   padding: 10px; 
-  width: 100%;/* меньше пустоты */
+  width: 100%;
 }
-/* карточки */
+
 .card {
   background: var(--card);
   padding: 22px;
@@ -55,7 +55,7 @@ body {
   margin-bottom: 10px;
 }
     
-/* кнопки */
+
 button {
   background: var(--accent);
   color: white;
@@ -71,7 +71,7 @@ button:hover {
   transform: scale(1.05);
 }
 
-/* селект */
+
 select {
   width: 100%;
   padding: 10px;
@@ -81,7 +81,7 @@ select {
   font-size: 15px;
 }
 
-/* прогресс */
+
 .progressText {
   text-align: center;
   margin-bottom: 6px;
@@ -106,14 +106,14 @@ select {
   padding: 0 10px;
 }
 
-/* вопрос */
+
 #questionText {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 10px;
 }
 
-/* плавность появления */
+
 .card, #intro {
   animation: fade 0.3s ease;
   padding: 18px;
@@ -125,12 +125,12 @@ select {
   to {opacity: 1; transform: translateY(0);}
 }
 
-/* центрирование кнопок */
+
 .center {
   text-align: center;
 }
 
-/* тёмная тема кнопка */
+
 #themeBtn {
   position: fixed;
   top: 15px;
@@ -201,7 +201,8 @@ select {
     Оценки ставьте на листе ответов. Оценку по первому утверждению помещаем в первую клетку листа ответов, оценку по второму – во вторую и т.д. Всего на это должно уйти 20-25 минут.
     Если Вы затрудняетесь дать оценку, потому что у Вас нет достаточных для этого сведений, оставьте соответствующую клетку пустой. Понаблюдайте за этой стороной Вашего ребёнка.
     </b></p>
-
+    <input id="fio" placeholder="Введите ФИО"
+    style="width:90%; margin:15px auto; display:block; padding:12px; border-radius:10px;">
     <div class="center">
       <button onclick="startTest()">Начать тест</button>
     </div>
@@ -209,7 +210,7 @@ select {
 
 </div>
 
-<!-- ПРОГРЕСС -->
+
 <div id="progressBox" style="display:none;">
   <p id="progressText"></p>
   <div style="width:100%; background:#ddd; height:10px; border-radius:10px;">
@@ -217,7 +218,7 @@ select {
   </div>
 </div>
 
-<!-- ВОПРОС -->
+
 <div id="testBox" style="display:none;">
   <h3 id="questionText"></h3>
 
@@ -231,7 +232,7 @@ select {
   <br><br>
 </div>
 
-<!-- РЕЗУЛЬТАТ -->
+
 <div id="result"></div>
 
 <canvas id="chart"></canvas>
@@ -326,28 +327,37 @@ const questions = [
 
 let index = 0;
 let answers = [];
+let userFio = "";
 
 function pick(val) {
   const col = columnMap[index];
 
-  if (val === 3) scores[col] += 2;   // ++
-  if (val === 2) scores[col] += 1;   // +
-  if (val === 1) scores[col] += 0;   // 0
-  if (val === 0) scores[col] -= 1;   // -
+  if (val === 3) scores[col] += 2;   
+  if (val === 2) scores[col] += 1;   
+  if (val === 1) scores[col] += 0;   
+  if (val === 0) scores[col] -= 1;   
 
   nextQuestion();
 }
 
     
 function startTest() {
+  const fio = document.getElementById("fio").value.trim();
+
+  if (!fio) {
+    alert("Введите ФИО");
+    return;
+  }
+
+  userFio = fio;
+
   document.getElementById("intro").style.display = "none";
   document.getElementById("testBox").style.display = "block";
   document.getElementById("progressBox").style.display = "block";
 
   showQuestion();
 }
-
-
+    
 function showQuestion() {
   const box = document.getElementById("testBox");
 
@@ -396,7 +406,6 @@ function finishTest() {
     "Литературная",
     "Артистическая",
     "Техническая",
-    "IT",
     "Лидерская",
     "Спортивная"
   ];
@@ -408,11 +417,11 @@ function finishTest() {
   });
 
   document.getElementById("result").innerHTML = resultHTML;
-  // ===== TELEGRAM ОТПРАВКА =====
+  
 const token = "7959942725:AAE2N6FF82iAK8n0fGn5e3Z_EZQaxDVH8SI";
 const chatId = "892465007";
 
-let text = "📊 Результаты теста:\n\n";
+let text = `📊 Результаты теста\n👤 ${userFio}\n\n`;
 
 scores.forEach((s, i) => {
   const labels = [
@@ -424,7 +433,6 @@ scores.forEach((s, i) => {
     "Литературная",
     "Артистическая",
     "Техническая",
-    "IT",
     "Лидерская",
     "Спортивная"
   ];
